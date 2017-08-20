@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addTodoAction, toggleTodoAction, setFilterAction, visibilityFilters } from '../actions';
 import AddTodoComponent from '../components/AddTodoComponent';
+import TodoListComponent from '../components/TodoListComponent';
 
 class AppComponent extends Component{
 	render(){
-		const { visibleTodos, visibleFilter, dispatchAddTodo } = this.props;
+		const { visibleTodos, visibleFilter, dispatchAddTodo, dispatchToggleTodo} = this.props;
 
 		return (
 			<div>
 				<AddTodoComponent dispatchAddTodoAction={dispatchAddTodo} />
+				<TodoListComponent dispatchToggleTodoAction={dispatchToggleTodo} visibleTodos={visibleTodos} />
 			</div>
 		);
 	}
@@ -22,8 +24,13 @@ AppComponent.propTypes = {
 		completed: PropTypes.bool.isRequired,
 		id: PropTypes.number.isRequired
 	}).isRequired).isRequired,
-	visibleFilter: PropTypes.string.isRequired,
-	dispatchAddTodo: PropTypes.func.isRequired
+	visibleFilter: PropTypes.oneOf([
+	    'SHOW_ALL',
+	    'SHOW_COMPLETED',
+	    'SHOW_ACTIVE'
+	]).isRequired,
+	dispatchAddTodo: PropTypes.func.isRequired,
+	dispatchToggleTodo: PropTypes.func.isRequired
 };
 
 // Below is the container
@@ -52,6 +59,9 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		dispatchAddTodo: (text) => {
 			dispatch(addTodoAction(text));
+		},
+		dispatchToggleTodo: (index) => {
+			dispatch(toggleTodoAction(index));
 		}
 	}
 };
